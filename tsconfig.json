@@ -1,0 +1,12 @@
+{
+    "compilerOptions": {
+        "target": "ES6",
+        "module": "CommonJS",
+        "outDir": "./dist",
+        "rootDir": "./api", // rootDir is temporary config to api.
+        "strict": true,
+        "esModuleInterop": true
+    },
+    "include": ["api/**/**/*.ts", "api/app.ts", "api/data/manifest/*.json"],
+    "exclude": ["node_modules"]
+}

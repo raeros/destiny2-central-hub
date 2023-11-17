@@ -1,0 +1,9 @@
+node_modules
+notes.md
+auth_bungie_flow.md
+generate_slim_manifest_inventory.js
+todo.md
+.env
+.env.development
+.env.staging
+.env.production
