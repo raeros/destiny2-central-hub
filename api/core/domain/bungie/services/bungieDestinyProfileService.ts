@@ -18,7 +18,7 @@ class BungieDestinyProfileService implements BaseService<BungieDestinyProfile> {
         return this.bungieDestinyProfile;
     }
 
-    async getProfile(membershipType: number, membershipId: string): Promise<CharacterProfile> {
+    async getProfile(membershipType: any, membershipId: any): Promise<CharacterProfile> {
         
         const bungieDestinyProfile = 
             await this.bungieHttpClient

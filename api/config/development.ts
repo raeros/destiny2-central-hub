@@ -7,7 +7,9 @@ const developmentConfig = {
         URL_ROOT: "https://bungie.net",
         DESTINY_2: {
             BASE_URL_PATH_API: "https://www.bungie.net/Platform/",
-            X_API_KEY: process.env.BUNGIE_API_KEY,
+            MEMBERSHIP_TYPE: process.env.BUNGIE_MEMBERSHIP_TYPE,
+            MEMBERSHIP_ID: process.env.BUNGIE_MEMBERSHIP_ID,
+            X_API_KEY: process.env.BUNGIE_API_KEY
         }
     },
     TWITCH: {
