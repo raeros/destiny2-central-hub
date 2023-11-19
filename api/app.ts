@@ -21,6 +21,10 @@ import TwitchLiveStreamsRoutes from './modules/twitch/routes/TwitchLiveStreamsRo
 import TwitchLiveStreamsCuratedRoutes from './modules/twitch/routes/TwitchLiveStreamsCuratedRoutes';
 import { TwitchConfig } from './core/domain/twitch/http/twitchConfig';
 
+// reddit imports
+import RedditPostsService from './core/domain/reddit/services/RedditPosts';
+import RedditPostsRoutes from './modules/reddit/routes/RedditPostsRoutes';
+import { RedditConfig } from './core/domain/reddit/http/redditConfig';
 
 
 class App {
@@ -33,7 +37,11 @@ class App {
     private twitchLiveStreamsRoutes!: TwitchLiveStreamsRoutes; // ! post-fix expression to tell TypeScript that this property will be definitely assigned a value before it's used
     private twitchLiveStreamsCuratedRoutes!: TwitchLiveStreamsCuratedRoutes; // ! post-fix expression to tell TypeScript that this property will be definitely assigned a value before it's used
     private twitchLiveStreamCuratedService!: TwitchLiveStreamCuratedService; // ! post-fix expression to tell TypeScript that this property will be definitely assigned a value before it's used
-    private twitchConfig!: httpClientConfig;
+    private twitchConfig!: httpClientConfig; // ! post-fix expression to tell TypeScript that this property will be definitely assigned a value before it's used
+    // reddit
+    private redditPostsService!: RedditPostsService; // ! post-fix expression to tell TypeScript that this property will be definitely assigned a value before it's used
+    private redditPostsRoutes!: RedditPostsRoutes; // ! post-fix expression to tell TypeScript that this property will be definitely assigned a value before it's used
+    private redditConfig!: httpClientConfig; // ! post-fix expression to tell TypeScript that this property will be definitely assigned a value before it's used
 
     constructor() {
         this.app = express();
@@ -49,13 +57,14 @@ class App {
     }
 
     private setHttpConfigServices(): void {
+        // TODO: make config for bungie http.
         this.twitchConfig = TwitchConfig;
+        this.redditConfig = RedditConfig
     }
 
     private dependencyInjectionServices(): void {
-        // TODO: change this code to use a bungie http config.
         // bungie
-        this.bungieDestinyProfileService = new BungieDestinyProfileService();
+        this.bungieDestinyProfileService = new BungieDestinyProfileService(); // TODO: change this code to use a bungie http config.
         this.bungieDestinyProfileRoutes = new BungieDestinyProfileRoutes(this.bungieDestinyProfileService);
         // twitch top five
         this.twitchLiveStreamsService = new TwitchLiveStreamsService(this.twitchConfig);
@@ -64,6 +73,9 @@ class App {
         this.twitchLiveStreamCuratedService = new TwitchLiveStreamCuratedService(this.twitchConfig);
         this.twitchLiveStreamsCuratedRoutes = new TwitchLiveStreamsCuratedRoutes(this.twitchLiveStreamCuratedService);
         // reddit
+        this.redditPostsService = new RedditPostsService(this.redditConfig);
+        this.redditPostsRoutes = new RedditPostsRoutes(this.redditPostsService);
+
     }
 
     private routes(): void {
@@ -74,6 +86,8 @@ class App {
         this.app.use("/api", this.twitchLiveStreamsRoutes.getRouter());
         // twitch curated list
         this.app.use("/api", this.twitchLiveStreamsCuratedRoutes.getRouter());
+        // reddit 
+        this.app.use('/api', this.redditPostsRoutes.getRouter());
     }
 
     public start(port: string | number): void {

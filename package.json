@@ -1,6 +1,6 @@
 {
   "name": "d2-hub",
-  "version": "0.0.1",
+  "version": "0.4.0",
   "description": "This is a simple Destiny 2 Hub.",
   "main": "./dist/server.js",
   "scripts": {

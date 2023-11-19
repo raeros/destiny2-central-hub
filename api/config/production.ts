@@ -7,15 +7,20 @@ const productionConfig = {
         URL_ROOT: "",
         DESTINY_2: {
             BASE_URL_PATH_API: "",
-            X_API_KEY: "",
             MEMBERSHIP_TYPE: 0,
-            MEMBERSHIP_ID: ""
+            MEMBERSHIP_ID: "",
+            X_API_KEY: ""
         }
     },
     TWITCH: {
         BASE_URL_PATH_API: "",
         CLIENT_ID: "",
         AUTHORIZATION: ""
+    },
+    REDDIT: {
+        BASE_URL_PATH_API: "",
+        AUTHORIZATION: "",
+        USER_AGENT: ""
     }
 };
 
