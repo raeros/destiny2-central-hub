@@ -7,6 +7,7 @@ configDotEnv({ path: fullPath });
 
 // imports
 import express, { Application } from 'express';
+import cors from 'cors';
 import config from './config/index';
 import { httpClientConfig } from './core/utils/httpClient';
 
@@ -53,7 +54,8 @@ class App {
 
     private config(): void {
         this.app.use(express.json());
-        this.app.use(express.urlencoded({ extended: true }));        
+        this.app.use(express.urlencoded({ extended: true }));    
+        this.app.use(cors());    
     }
 
     private setHttpConfigServices(): void {

@@ -1,0 +1,278 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans&display=swap');
+
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
+    font-family: 'Open Sans', sans-serif;
+    background-color: rgba(239, 239, 241, 0.2)
+}
+
+h3 {
+    font-weight: 900 !important;
+} 
+
+.destiny-loadout-section {
+    width: 96vw;
+    height: 20vh;
+    position: fixed;
+    top: 0;
+    padding: 20px;
+    margin-top: 1%;
+    border-radius: 20px; 
+    border-width: 4px;
+    border-style: solid;
+    border-color: rgba(65, 60, 65, 0.01);
+    background-color: rgba(239, 239, 241, 0.6);
+    box-shadow: 6px 6px 14px rgba(65, 60, 65, 0.2);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: normal;
+    overflow-x: auto;    
+}
+
+.destiny-loadout-section .classes {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.destiny-loadout-section .classes .player-characters-emblem-bg {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 380px;
+    height: 76px;
+    overflow: hidden; /* Add this to contain the pseudo-element */
+}
+
+.destiny-loadout-section .classes .player-characters-emblem-bg::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    filter: blur(8px);
+    z-index: -1; 
+}
+
+.destiny-loadout-section .classes .player-characters-emblem {
+    text-align: right;
+    display: inline-block;
+    box-sizing: border-box; 
+    flex: 1;
+    margin-right: 10px;
+    color: white;
+    z-index: 1; 
+}
+
+.destiny-loadout-section .loadout {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.destiny-loadout-section .loadout .player-characters-loadout {
+    /* display: flex; */
+    /* flex-direction: column;
+    justify-content: space-between; */
+    /* align-items: center;
+    flex: 1; */
+    
+   
+}
+
+.destiny-loadout-section .loadout .player-characters-loadout img {
+    max-width: auto;
+    max-height: 80px;
+    border-radius: 4px;
+}
+
+.twitch-section {
+    width: 96vw;
+    height: auto;
+    position: fixed;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 20px; 
+    border-width: 2px;
+    border-style: solid;
+    border-color: rgba(145, 70, 255, 0.01);
+    background-color: rgba(239, 239, 241, 0.6);
+    box-shadow: 6px 6px 14px rgba(145, 70, 255, 0.2);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow-x: auto;    
+}
+
+.twitch-section .twitch-content-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: normal;
+}
+
+
+.twitch-section .twitch-content-container .twitch-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: min-content;
+    height: min-content;
+    border-width: 3px;
+    border-style: solid;
+    border-radius: 10px;
+    border-color: rgba(145, 70, 255, 0.05);
+    background-color: rgba(239, 239, 241, 0.08);
+    box-shadow: 6px 6px 14px rgba(145, 70, 255, 0.15);
+    padding: 20px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+
+.twitch-section .twitch-content-container .twitch-dropdown .twitch-dropdown-menu {
+    
+}
+
+.twitch-section .twitch-content-container .twitch-dropdown {
+    
+}
+
+.twitch-section .twitch-content-container .twitch-content h3 {
+    color: #0e0e10;
+    font-size: 15px;
+    text-overflow: ellipsis;
+    line-height: normal;
+    font-weight: 600 !important;
+    border: 0;
+    height: 80px;
+    display: block;
+    margin-block-start: 1em;
+    margin-block-end: 1em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+
+}
+
+.twitch-section .twitch-content-container .twitch-content p {
+    color: grey;
+    font-size: 14px;
+    margin: 0;
+}
+
+.twitch-section .twitch-content-container .twitch-content a {
+    text-decoration: none;
+}
+
+.twitch-section .twitch-content-container .twitch-content a p {
+    color: #9146FF;
+}
+
+.twitch-section .twitch-content-container .twitch-content img {
+    max-width: 300px;
+    max-height: auto;
+    border-radius: 4px;
+}
+
+.reddit-section {
+    width: 96vw;
+    height: 22vh;
+    position: fixed;
+    padding: 20px;
+    margin-bottom: 1%;
+    bottom: 0;
+    border-radius: 20px; 
+    border-width: 2px;
+    border-style: solid;
+    border-color: rgba(255, 69, 0, 0.01);
+    box-shadow: 6px 6px 14px rgba(255, 69, 0, 0.3);
+    background-color: rgba(239, 239, 241, 0.4);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: normal;
+    overflow-x: auto;    
+}
+
+.reddit-section .reddit-content {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: top;
+}
+
+
+.reddit-section .reddit-content a {
+    text-decoration: none;
+}
+
+.reddit-section .reddit-content .reddit-content-post {
+    width: auto;
+    max-width: 300px;
+    text-overflow: ellipsis;
+    text-wrap: pretty;
+    height: 150px;
+    border-radius: 4px; 
+    border-width: 4px;
+    border-style: solid;
+    border-color: rgba(255, 69, 0, 0.01);
+    box-shadow: 6px 6px 14px rgba(255, 69, 0, 0.07);
+    background-color: rgba(239, 239, 241, 0.3);
+    padding: 20px;
+    
+}
+
+
+.reddit-section .reddit-content .reddit-content-post h3 {
+    color: #0e0e10;
+    font-size: 14px;
+    text-overflow: ellipsis;
+    line-height: normal;
+    font-weight: 600 !important;
+    border: 0;
+    display: block;
+    
+    margin-block-start: 1em;
+    margin-block-end: 1em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+}
+
+
+.reddit-section .reddit-content .reddit-content-post p {
+    color: #0e0e10;
+    font-size: 12px;
+    margin-top: 5px;
+    font-weight: 900;
+    padding: 0;
+}
+
+
+.reddit-section .reddit-content .reddit-content-post .reddit-content-post-title {
+    height: 76px;
+  
+}
+
+
+.reddit-section .reddit-content .reddit-content-post .reddit-content-post-author {
+    float: right;
+    color: rgba(255, 69, 0, 1);
+}
+
+
+.reddit-section .reddit-content .reddit-content-post .reddit-content-post-author p {
+    color: rgba(255, 69, 0, 1);
+    
+    font-size: 14px;
+    font-weight: bolder;
+}
