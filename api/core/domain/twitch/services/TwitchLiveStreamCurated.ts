@@ -64,7 +64,11 @@ class TwitchLiveStreamCurated {
 
     private setQueryString(query: object, type: string) {
         let streamersUserLoginNamesQuery: any = query;
-        streamersUserLoginNamesQuery = streamersUserLoginNamesQuery['login'].map((streamer: string) => `${type}=${streamer}`).join('&');
+        if(Array.isArray(streamersUserLoginNamesQuery['login'])){
+            streamersUserLoginNamesQuery = streamersUserLoginNamesQuery['login'].map((streamer: string) => `${type}=${streamer}`).join('&');
+        } else {
+            streamersUserLoginNamesQuery = `${type}=${streamersUserLoginNamesQuery.login}`;
+        }
 
         return streamersUserLoginNamesQuery.toLocaleLowerCase();
     }

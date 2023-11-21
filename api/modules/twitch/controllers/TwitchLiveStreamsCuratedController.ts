@@ -10,6 +10,7 @@ class TwitchLiveStreamsCuratedController implements BaseController {
     async handleRequest(req: Request, res: Response): Promise<void> {
        try {
             const query = req.query;
+            console.log(query);
             const twitchLiveStreamCurated = await this.twitchLiveStreamCuratedService.getList(query);
 
             res.json(twitchLiveStreamCurated);

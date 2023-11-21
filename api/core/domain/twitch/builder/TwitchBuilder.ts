@@ -44,12 +44,20 @@ class TwitchBuilder {
     }
 
     checkIfCuratedStreamerAreOffline(params: any) {
-        params['login'].forEach((streamerName: string) => {            
-            const streamer = this.findStreamerByLogin(streamerName);
+        if(Array.isArray(params['login'])) {
+            params['login'].forEach((streamerName: string) => {            
+                const streamer = this.findStreamerByLogin(streamerName);
+                if(!streamer) {
+                    this.addOfflineStreamer(streamerName);
+                }
+            });
+        } else {                    
+            const streamer = this.findStreamerByLogin(params['login']);
             if(!streamer) {
-                this.addOfflineStreamer(streamerName);
+                this.addOfflineStreamer(params['login']);
             }
-        });
+        }
+       
         return this;
     }
     

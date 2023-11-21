@@ -1,3 +1,10 @@
+# Destiny 2 Central Hub
+
+
+## Screenshot
+![Screenshot of the Project](image/screenshot.png)
+
+
 
 # Roadmap
 ## 0.1 version -- integration with bungie.net
@@ -16,5 +23,4 @@
 - ~~give an option for the user to say which streamer they want to "track" to see if they're live or not. Giving the option between switching "top streaming vs my favorites"~~
 
 ## 0.5 version -- work on UI/UX for the project
-until now i just made things work. now, let's make a little less awful to look.
-- design new UI/UX for the page. Make a simple and clean.
+- ~~make basic UI for the project.~~

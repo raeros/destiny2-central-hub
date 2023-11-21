@@ -1,6 +1,20 @@
 
 (function() {
 
+  let localCacheCuratedStreamers;
+  let curateStreamerList;
+
+  function setGlobalCacheCuratedStreamers(){
+        localCacheCuratedStreamers = checkLocalCacheForCuratedStreamers();
+  }
+
+  function setGlobalCurateStreamerList(){
+        curateStreamerList = generateValidCurateStreamerQuery(localCacheCuratedStreamers);
+  }
+
+  setGlobalCacheCuratedStreamers();
+  setGlobalCurateStreamerList();
+
   const getDestinyPlayerInformation = function (){
     fetch("http://localhost:3000/api/destiny-profile")
         .then(response => response.json())
@@ -12,26 +26,30 @@
         });
   };
 
-  const getTwitchPlayerInformation = function (twitchSelectedType = "twitch-top-five", twitchDropDownSelected){
-    fetch(`http://localhost:3000/api/${twitchSelectedType}`)
+  const getTwitchPlayerInformation = function (twitchSelectedType = "twitch-top-five", twitchDropDownSelected, twitchCuratedStreamerQuery){
+    const twitchEndpoint = 
+        twitchCuratedStreamerQuery && twitchCuratedStreamerQuery.length > 0 ? 
+        `http://localhost:3000/api/${twitchSelectedType}${twitchCuratedStreamerQuery}` : 
+        `http://localhost:3000/api/${twitchSelectedType}`;
+
+    fetch(twitchEndpoint)
         .then(response => response.json())
         .then(data => {
             if(data && data.length > 0) {
                 console.log("twitch information..");
-                console.log(data);
                 displayTwitchInformation(data, twitchDropDownSelected);
             }
         });
   };
 
-  const getRedditDestinyInformation = function (contentType = "hot"){
+  const getRedditDestinyInformation = function (contentType){
     fetch(`http://localhost:3000/api/reddit-posts?contentType=${contentType}`)
     .then(response => response.json())
     .then(data => {
         if(data && data.length > 0) {
             console.log("reddit information..");
             console.log(data);
-            displayRedditDestinyInformation(data);
+            displayRedditDestinyInformation(data, false, contentType);
         }
     });
   };
@@ -90,6 +108,7 @@
   };
 
   function displayTwitchInformation(data, selectedInfo){
+        
         // twitch section
         let twitchDiv = document.getElementsByClassName("twitch-section")[0];
         twitchDiv.innerHTML = "";
@@ -101,7 +120,11 @@
         let twitchDropDownMenu = document.createElement("select");
         let twitchCreateCuratedStreamerDiv = document.createElement("div");
         let twitchCreateCuratedStreamer = document.createElement("button");
+        
         let twitchCreateCuratedStreamerInput = document.createElement("input");
+        let twitchCreateCuratedStreamerInputError = document.createElement("p");
+        twitchCreateCuratedStreamerInputError.className = "twitch-create-curated-streamer-input-error";
+        twitchCreateCuratedStreamerInputError.innerHTML = "";
         twitchCreateCuratedStreamerInput.className = "twitch-create-curated-streamer-input";
         twitchCreateCuratedStreamerInput.placeholder = "Streamer Name";
         
@@ -112,6 +135,7 @@
         twitchCreateCuratedStreamer.className = "twitch-create-curated-streamer-btn";
 
         twitchCreateCuratedStreamer.innerHTML = "Add Streamer";
+        
         twitchDropDownMenu.options.add( new Option("Top Five", "topFive", ""));
         twitchDropDownMenu.options.add( new Option("Curated", "curated", ""));
         twitchDropDownMenu.options.selectedIndex = selectedInfo == "topFive" ? 0 : 1; // set the selected index based on the selectedInfo
@@ -120,6 +144,7 @@
         twitchDropDownDiv.appendChild(twitchDropDownMenu);
         twitchCreateCuratedStreamerDiv.appendChild(twitchCreateCuratedStreamer);
         twitchCreateCuratedStreamerDiv.appendChild(twitchCreateCuratedStreamerInput);
+        twitchCreateCuratedStreamerDiv.appendChild(twitchCreateCuratedStreamerInputError);
         twitchDropDownDiv.appendChild(twitchCreateCuratedStreamerDiv);
         twitchDiv.appendChild(twitchDropDownDiv);
 
@@ -129,16 +154,22 @@
         } else {
             document.getElementsByClassName("twitch-create-curated-streamer")[0].style = "";
             document.getElementsByClassName("twitch-create-curated-streamer-input")[0].style.visibility = "";
+           
         }
 
         data.forEach(element => {
             let twitchContentContainerDiv = document.createElement("div");
+            twitchContentContainerDiv.innerHTML = "";
             let twitchContentContainerImg = document.createElement("img");
             let twitchContentContainerTitle = document.createElement("h3");
             let twitchContentContainerViews = document.createElement("p");
             let twitchContentContainerChannel = document.createElement("p");
             let twitchContentContainerChannelLink = document.createElement("a");
-
+            let twitchDeleteCuratedStreamer = document.createElement("button");
+            
+            twitchDeleteCuratedStreamer.innerHTML = "Delete Streamer";
+            twitchDeleteCuratedStreamer.className = "twitch-delete-curated-streamer-btn";
+            twitchDeleteCuratedStreamer.style.visibility = selectedInfo == "topFive" ? "hidden" : "";
             twitchContentContainerDiv.className = "twitch-content";
             twitchContentContainerImg.src = element.thumbnailUrl;
             twitchContentContainerImg.alt = element.title;
@@ -151,24 +182,80 @@
             twitchContentContainerChannel.innerHTML = element.userName;
             twitchContentContainerChannelLink.href = `https://www.twitch.tv/${element.userLogin}`;
 
+
             twitchContentContainerDiv.appendChild(twitchContentContainerImg);
             twitchContentContainerDiv.appendChild(twitchContentContainerTitle);
             twitchContentContainerDiv.appendChild(twitchContentContainerViews);
             twitchContentContainerChannelLink.appendChild(twitchContentContainerChannel);
             twitchContentContainerDiv.appendChild(twitchContentContainerChannelLink);
+            twitchContentContainerDiv.appendChild(twitchDeleteCuratedStreamer);
             twitchContentContainer.appendChild(twitchContentContainerDiv);
             twitchDiv.appendChild(twitchContentContainer);
+
+            twitchDeleteCuratedStreamer.addEventListener("click", (event) => deleteCuratedStreamer(event, element.userLogin));
         });
 
+        if(localCacheCuratedStreamers.length >= 5){
+            setCuratedStreamerMaxOut();
+        } else {
+            console.log("set current total..");
+            setCuratedStreamerTotal(localCacheCuratedStreamers);
+        }
+         
          // set event listener for dropdown
          document.getElementsByClassName("twitch-dropdown-menu")[0].addEventListener("change", processDropDownChange);
+         twitchCreateCuratedStreamer.addEventListener("click", processNewTwitchCuratedStreamer);
 
   };
 
-  function displayRedditDestinyInformation(data, showStickiedPosts = false){
+  function displayRedditDestinyInformation(data, showStickiedPosts = false, selectedInfo){
         // edit the DOM.
         let redditDiv = document.getElementsByClassName("reddit-section")[0];
         let redditContentDiv = document.createElement("div");
+
+        let redditDropDownMenu = document.createElement("select");
+        redditDropDownMenu.className = "reddit-dropdown-menu";
+        
+        redditDropDownMenu.options.add( new Option("Hot", "hot", ""));
+        redditDropDownMenu.options.add( new Option("Rising", "rising", ""));
+        redditDropDownMenu.options.add( new Option("Top [all]", "top", ""));
+        redditDropDownMenu.options.add( new Option("Top [hour]", "top&t=hour", ""));
+        redditDropDownMenu.options.add( new Option("Top [day]", "top&t=day", ""));
+        redditDropDownMenu.options.add( new Option("Top [week]", "top&t=week", ""));
+        redditDropDownMenu.options.add( new Option("Top [month]", "top&t=month", ""));
+        redditDropDownMenu.options.add( new Option("Top [year]", "top&t=year", ""));
+
+        switch (selectedInfo) {
+            case "hot":
+                redditDropDownMenu.options.selectedIndex = 0;
+                
+                break;
+            case "rising":
+                redditDropDownMenu.options.selectedIndex = 1;
+                break;
+            case "top":
+                redditDropDownMenu.options.selectedIndex = 2;
+                break;
+            case "top&t=hour":
+                redditDropDownMenu.options.selectedIndex = 3;
+                break;
+            case "top&t=day":
+                redditDropDownMenu.options.selectedIndex = 4;
+                break;
+            case "top&t=week":
+                redditDropDownMenu.options.selectedIndex = 5;
+                break;
+            case "top&t=month":
+                redditDropDownMenu.options.selectedIndex = 6;
+                break;
+            case "top&t=year":
+                redditDropDownMenu.options.selectedIndex = 7;
+                break;
+            default:
+                break;
+        }
+        localStorage.setItem("redditDefaultFilterSelected", selectedInfo);
+        redditDropDownMenu.style.float = "left";
         redditContentDiv.className = "reddit-content";
 
         redditDiv.innerHTML = "";
@@ -207,16 +294,32 @@
             }
         });
 
+        redditContentDiv.appendChild(redditDropDownMenu);
         redditDiv.appendChild(redditContentDiv);
 
+        document.getElementsByClassName("reddit-dropdown-menu")[0].addEventListener("change", (event) => processDropDownRedditChange(event, event.target.value));
        
   };
 
   function processDropDownChange(event){
+        
         switch (this.value) {
-            case "curated":
-                getTwitchPlayerInformation("twitch-curated?login=datto&login=leopard&login=gladd", this.value);
-                break;
+            case "curated":                
+                if(localCacheCuratedStreamers && localCacheCuratedStreamers.length > 0){       
+                    //setGlobalCacheCuratedStreamers();       
+                    console.log("curated streamers old: ", curateStreamerList);
+                    setGlobalCurateStreamerList();
+                    console.log("curated streamers new: ", curateStreamerList);
+                    getTwitchPlayerInformation("twitch-curated", this.value, curateStreamerList);
+                    break;
+                } else {
+                    console.log("no curated streamers");
+                    let twitchContentContainer = document.getElementsByClassName("twitch-content-container")[0];
+                    twitchContentContainer.innerHTML = "";
+                    document.getElementsByClassName("twitch-create-curated-streamer")[0].style = "";
+                    document.getElementsByClassName("twitch-create-curated-streamer-input")[0].style.visibility = "";
+                    break;
+                }
             case "topFive":
                 getTwitchPlayerInformation("twitch-top-five", this.value);
                 break;
@@ -225,14 +328,77 @@
         }
   }
 
+  function processDropDownRedditChange(event, contentType){
+    // call the service passing the config expected.
+    getRedditDestinyInformation(contentType);
+  }
+
+  function setCuratedStreamerMaxOut() {
+        console.log("maxOut called");
+        document.getElementsByClassName("twitch-create-curated-streamer-input")[0].value = "";
+        document.getElementsByClassName("twitch-create-curated-streamer-input-error")[0].visibility = "";
+        document.getElementsByClassName("twitch-create-curated-streamer-input-error")[0].innerHTML = `5 of 5 streamers added. To add a new streamer, please remove one.`;
+  }
+
+  function setCuratedStreamerTotal(curateStreamerList) {
+        document.getElementsByClassName("twitch-create-curated-streamer-input-error")[0].visibility = "";
+        document.getElementsByClassName("twitch-create-curated-streamer-input-error")[0].innerHTML = `${curateStreamerList.length}/5 Streamer Added`;
+  }
+
+  function processNewTwitchCuratedStreamer(event) {
+        if(localCacheCuratedStreamers.length >= 5){
+            setCuratedStreamerMaxOut();
+        } else {
+
+            setCuratedStreamerTotal(localCacheCuratedStreamers);
+
+            const newStreamerInputValue = document.getElementsByClassName("twitch-create-curated-streamer-input")[0].value;
+            localCacheCuratedStreamers.push(newStreamerInputValue);
+
+            const validCuratedStreamerQuery = generateValidCurateStreamerQuery(localCacheCuratedStreamers);
+            console.log("new curated streamer added with value: ", validCuratedStreamerQuery);
+    
+            setLocalCacheForCuratedStreamers(localCacheCuratedStreamers);
+            getTwitchPlayerInformation("twitch-curated", "curated", validCuratedStreamerQuery);
+    
+            return validCuratedStreamerQuery;
+        }
+  }
+
+  function deleteCuratedStreamer(event, streamerName){     
+        let tempLocalCacheCuratedStreamers  = localCacheCuratedStreamers;
+        const streamerNameIndex = localCacheCuratedStreamers.indexOf(streamerName);
+        tempLocalCacheCuratedStreamers.splice(streamerNameIndex, 1);
+        setLocalCacheForCuratedStreamers(tempLocalCacheCuratedStreamers);
+        event.target.parentNode.remove();
+  }
+
+  function generateValidCurateStreamerQuery(streamersNames){
+        return `?` + streamersNames.map((streamer) => `login=${streamer}`).join('&');
+  }
+
+  function checkLocalCacheForCuratedStreamers(){
+    const curatedStreamers = localStorage.getItem("curatedStreamers");
+    if(curatedStreamers){
+        let curatedStreamersValidQuery = JSON.parse(curatedStreamers);
+        return curatedStreamersValidQuery;
+    } else {
+        return [];
+    }
+  }
+
+  function setLocalCacheForCuratedStreamers(streamersNames){
+        localStorage.setItem("curatedStreamers", JSON.stringify(streamersNames));
+  }
+
   // twitch
   const twitchDefaultSelected = "topFive";
   const twitchDefaultSelectedStreams = "twitch-top-five";
   // reddit
-  const redditDefaultFilterSelected = "hot";
+  const redditDefaultFilterSelected = localStorage.getItem("redditDefaultFilterSelected") ? localStorage.getItem("redditDefaultFilterSelected") : "hot";
 
-  //getDestinyPlayerInformation();
+  getDestinyPlayerInformation();
   getTwitchPlayerInformation(twitchDefaultSelectedStreams, twitchDefaultSelected);
-  //getRedditDestinyInformation(redditDefaultFilterSelected);
+  getRedditDestinyInformation(redditDefaultFilterSelected);
 
 })();
