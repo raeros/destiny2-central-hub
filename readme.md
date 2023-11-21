@@ -4,7 +4,20 @@
 ## Screenshot
 ![Screenshot of the Project](image/screenshot.png)
 
+## Configuration
+To run this application you first will need Access Tokens from `Bungie`, `Twitch` and `Reddit`.
+[Reddit Token](https://github.com/reddit-archive/reddit/wiki/OAuth2), [Bungie Token](https://github.com/Bungie-net/api/wiki/OAuth-Documentation), [Twitch Token](https://dev.twitch.tv/docs/authentication/).
 
+After, create an `.env.development` file in the root of your application. Use the file `.env.example` as your starting guide.
+
+Now, install our dependencies with `npm install` for the backend. After that, you will need to use the library called `live-server`.. you can install it with `npm install -g live-server`.
+
+## Running
+run server: `npm run start`<br> 
+    - API endpoint `http://localhost:3000` <br>
+    
+run web: `cd web && live-server` <br>
+    - WEB `http://localhost:8080`
 
 # Roadmap
 ## 0.1 version -- integration with bungie.net
